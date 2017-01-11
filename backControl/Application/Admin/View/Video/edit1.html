@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="__CSS__/functional.css" />
+<include file="Index/header"/>
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<!--面包屑导航.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							<a href="__URL__/index">视频浏览</a>
+						</li>
+						<li class="active">
+							<i class="fa fa-fw fa-edit"></i>
+							视频详情
+						</li>
+					</ol>
+				</div>
+			</div>
+			<!--表单.row-->
+			<div class="row">
+				<video id="myVideo" width="700" height="300" controls style="position: absolute;margin-left: 15px;">
+					<source src="http://www.kphp.org/html5/kphp.mp4" type="video/mp4">
+					<source src="http://www.kphp.org/html5/kphp.ogv" type="video/ogg">
+					kphp框架提醒您：您的浏览器不支持 video 标签。
+				</video>
+		        <div class="col-sm-4 col-sm-offset-8">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="control-label col-sm-4">视频标题:</label>
+							<label class="control-label">{$menu.video_title}</label>	
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">视频时长:</label>
+							<label class="control-label">{$menu.video_length}</label>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">发布时间:</label>
+							<label class="control-label">{$menu.send_datetime}</label>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">发布人:</label>
+							<label class="control-label">{$menu.hospital_user_name}</label>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">视频类型:</label>
+							<label class="control-label">{$menu.video_type_name}</label>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">审核状态:</label>
+							<label class="control-label">{$menu.video_check_state}</label>
+							<button type="button" class="btn btn-danger btn-xs"
+						        data-container="body" data-toggle="popover" data-placement="bottom"
+						        data-content="{$menu.error_message}" <if condition="$menu['video_check_state'] neq 未通过">style="display:none ;"</if>>
+						        驳回原因
+						    </button>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">审核人:</label>
+							<label class="control-label" <if condition="$menu['video_check_state'] eq 未审核">style="display:none ;"</if>>{$menu.hospital_user_name}</label>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group" style="border: 1px solid #dddddd;position: relative;margin-top: 35px">
+						<label class="label_name" style="background-color: #FFF;position: absolute;top: -20px;font-size: 18px;left: 20px !important;padding: 5px 20px;">视频简介</label>
+						<div style="margin: 20px;line-height: 24px;">
+						{$menu.video_introduction}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4 col-sm-offset-5">
+				<a href="__URL__/add1?id={$menu.video_id}&num={$menu.video_num}"><input type="button" class="btn btn-info" <if condition="$menu['video_check_state'] eq 已通过">style="display:none ;"</if> value="编辑"/></a>
+				<input type="button" class="btn btn-group" onclick="javascript:history.back(-1);" value="取消"<if condition="$menu['video_check_state'] eq 已通过">style="display:none ;"</if>>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="__JS__/flowplayer.min.js" ></script>
+<script>
+	
+//	 var FZ_VIDEO = new createVideo(
+//      "tl_player",  //容器的id
+//   {
+//        url: 'http://127.0.0.1/homecare1/UploadAudios/load.mp4',  //视频地址
+//       autoplay:false,          //是否自动播放
+//    }
+//  );
+// 
+	$(function () { 
+		$("[data-toggle='popover']").popover();
+	});
+
+</script>
+<include file="Index/footer"/>
+
+
+

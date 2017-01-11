@@ -1,0 +1,171 @@
+<include file="Index/header"/>
+<style>
+	td{
+		 text-align:center;
+	}
+</style>
+
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li class="">
+							<i class="fa fa-fw fa-edit"></i>
+							商铺浏览
+						</li>
+						
+					</ol>
+				</div>				
+			</div><!--.row面包屑导航   -->
+			<div class="row">
+				<div class="col-md-12">
+					<form class="form-horizontal" action="__ACTION__" method="post">
+						<div class="form-group">
+							<div class="col-sm-2">
+								<select name="zyn-select-type" id="zyn-select-type" class="form-control">
+									<option value="0"  selected="selected">全部状态</option>
+									<option value="1">未审核</option>
+									<option value="2">通过</option>
+									<option value="3">未通过</option>
+								</select>
+							</div>
+							<div class="col-sm-6">
+								<form action="__ACTION__" method="post" class="form-horizontal" name="search"> 
+									<div class="input-group">
+										<span class="input-group-addon">搜索</span>
+										<input class="form-control" type="text" name="search" value="{$search}" placeholder="请输入要搜索的商店名称"/>
+										<div class="input-group-btn">
+											<button type="submit" class="btn btn-primary">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</form>
+				</div>	
+				
+				<div class="col-md-12">
+						<div class="table-responsive">
+							<form id="zyn-form-list">
+								<table class="table table-bordered table-hover zyn-table-list" id="tableID">
+									<thead>
+										<tr class="btn-primary">
+											<td style="display: none;"></td>
+											<td>版本号</td>
+											<td>商铺名</td>
+											<td>商铺类型</td>										
+											<td>营业时间</td>
+											<td>状态</td>																				
+											
+											<td colspan="2">操作</td>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="shop_info" id="vo">
+											<tr>
+												<td style="display: none;">{$vo.store_shop_id}</td>
+												<td>{$vo.store_version_number}</td>
+												<td>{$vo.store_shop_name}</td>
+												<td>{$vo.store_type_id}</td>											
+												<td>{$vo.store_begin_time}~{$vo.store_end_time}</td>	
+												<td>{$vo.store_check_state_id}</td>
+												<td>
+													<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-editor3" onclick="clickCheck(this)">详情</span>
+												</td>
+												<td>
+													<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>
+												</td>
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+					<!-- 模态框（Modal） --------------------------------->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+										&times;
+									</button>
+									<h4 class="modal-title" id="myModalLabel">
+										详情信息
+									</h4>
+								</div>
+							</div><!-- /.modal-content -->
+						</div><!-- /.modal -->
+					</div>
+					<!-------------------------------------------------->
+				
+			</div>
+		</div>
+	</div>
+</div>	
+<script>
+	var SCOPE={
+		'add_url':'__URL__/add',
+		'edit_url':'__URL__/edit',
+		'set_status_url':'__URL__/setStatus',
+		'list_order_url':'__URL__/listOrder',
+		'success_refresh_url':'__ACTION__',
+	};
+	$("#zyn-select-type").on('change',function(){
+		var selectedValue = $(this).val();
+		$.ajax({
+			type:"post",
+			url:"__URL__/getData",
+			async:true,
+			data:{'selectedValue':selectedValue},
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				$('#tableID tbody').remove();
+				var sRows = '';
+				for( var i in data ){
+					var sRow = '<tr>'+
+									'<td style="display: none;">'+data[i].store_shop_id+'</td>'+
+									'<td>'+data[i].store_version_number+'</td>'+
+									'<td>'+data[i].store_shop_name+'</td>'+
+									'<td>'+data[i].store_type_id+'</td>'+										
+									'<td>'+data[i].store_begin_time+'~'+data[i].store_end_time+'</td>'+	
+									
+									'<td>'+data[i].store_check_state_id+'</td>'+
+									'<td>'+
+										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-editor3" onclick="clickCheck(this)">详情</span>'+
+									'</td>'+
+									'<td>'+
+										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
+									'</td>'+
+								'</tr>';
+					sRows += sRow;
+				}
+				$('#tableID').append('<tbody></tbody>');
+				$('#tableID tbody').html(sRows);
+			}
+		});
+	});
+//	
+	function clickCheck(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+		console.log(id);
+		var num = objpp.children[1].innerText;
+		location.href = '__URL__/details'+'?id='+id+'&num='+num;
+	}
+	function clickHistory(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+//		console.log(id);
+		var postData={};
+		location.href = '__URL__/history'+'?id='+id;	
+	}
+</script>
+	
+<include file="Index/footer"/>

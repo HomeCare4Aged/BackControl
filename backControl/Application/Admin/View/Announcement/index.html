@@ -1,0 +1,312 @@
+<include file="Index/header"/>
+<style>
+	td{
+		 text-align:center;
+	}
+</style>
+
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li class="">
+							<i class="fa fa-fw fa-edit"></i>
+							公告浏览
+						</li>
+						
+					</ol>
+				</div>				
+			</div><!--.row面包屑导航   -->
+			<div class="row">
+				<div class="col-md-12">
+					<form class="form-horizontal" action="__ACTION__" method="post">
+						<div class="form-group">
+							<div class="col-sm-2">
+								<select name="zyn-select-user" id="zyn-select-choosse" class="form-control">
+									<option value="0" selected="selected">我的公告</option>
+									<option value="1" >全部</option>
+								</select>
+							</div>
+							<div class="col-sm-2">
+								<select name="zyn-select-type" id="zyn-select-type" style="display:auto ;" class="form-control">
+									<option value="0" selected="selected">全部状态</option>
+									<option value="1">未审核</option>
+									<option value="2">已通过</option>
+									<option value="3">未通过</option>
+								</select>
+							</div>
+							<div class="col-sm-6">
+								<form action="__ACTION__" method="post" class="form-horizontal" name="search"> 
+									<div class="input-group">
+										<span class="input-group-addon">搜索</span>
+										<input class="form-control" type="text" name="search" placeholder="请输入要搜索的" value="{$search}"/>
+										<div class="input-group-btn">
+											<button type="submit" class="btn btn-primary">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-sm-2">
+								<button type="button"  id="zyn-btn-add" class="btn btn-primary">添加新公告</button>
+							</div>
+						</div>
+					</form>
+				</div>	
+				
+				<div class="col-md-12">
+						<div class="table-responsive">
+							<form id="zyn-form-list">
+								<table class="table table-bordered table-hover zyn-table-list" id="tableID">
+									<thead>
+										<tr class="btn-primary">
+											<td style="display: none;"></td>
+											<td>版本号</td>
+											<td>公告标题</td>
+											<td>发布时间</td>										
+											<td>状态</td>
+											<td>驳回意见</td>
+											<td colspan="3">操作</td>																				
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="announcement" id="vo">
+											<tr>
+												<td style="display: none;">{$vo.announcement_id}</td>
+												<td>{$vo.announcement_version_number}</td>
+												<td>{$vo.announcement_title}</td>
+												<td>{$vo.send_datetime}</td>											
+												<td>{$vo.announcement_check_state}</td>	
+												<td>{$vo.error_message}</td>	
+												<td>
+													<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-delete1" onclick="clickDelete(this)">删除</span>
+												</td>
+												<td>
+													<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-editor3" onclick="clickCheck(this)">编辑</span>
+												</td>
+												<td>
+													<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>
+												</td>
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+					<!-- 模态框（Modal） --------------------------------->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+										&times;
+									</button>
+									<h4 class="modal-title" id="myModalLabel">
+										详情信息
+									</h4>
+								</div>
+							</div><!-- /.modal-content -->
+						</div><!-- /.modal -->
+					</div>
+					<!-------------------------------------------------->
+				
+			</div>
+		</div>
+	</div>
+</div>	
+<script>
+	var SCOPE={
+		'add_url':'__URL__/add',
+		'edit_url':'__URL__/edit',
+		'set_status_url':'__URL__/setStatus',
+		'list_order_url':'__URL__/listOrder',
+		'success_refresh_url':'__ACTION__',
+	};
+	$("#zyn-select-type").on('change',function(){
+		var selectedValue = $(this).val();
+		$.ajax({
+			type:"post",
+			url:"__URL__/getData",
+			async:true,
+			data:{'selectedValue':selectedValue},
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				$('#tableID tbody').remove();
+				var sRows = '';
+				for( var i in data ){
+					var sRow = '<tr>'+
+									'<td style="display: none;">'+data[i].announcement_id+'</td>'+
+									'<td>'+data[i].announcement_version_number+'</td>'+
+									'<td>'+data[i].announcement_title+'</td>'+
+									'<td>'+data[i].send_datetime+'</td>'+										
+									'<td>'+data[i].announcement_check_state+'</td>'+	
+									'<td>'+data[i].error_message+'</td>'+
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-delete1" onclick="clickDelete(this)">删除</span>'+
+									'</td>'+
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-editor3" onclick="clickCheck(this)">编辑</span>'+
+									'</td>'+
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
+									'</td>'+
+								'</tr>';
+					sRows += sRow;
+					
+				}
+				$('#tableID').append('<tbody></tbody>');
+				$('#tableID tbody').html(sRows);
+				sortList();
+			}
+		});
+	});
+	$('#zyn-select-choosse').click(function(){
+        if(($(this).val()) == 0){
+        	$('#zyn-select-type').attr('style','display:auto');
+     	    $('#zyn-select-type').val(0);
+        }
+        if(($(this).val()) == 1){	
+        	$('#zyn-select-type').attr('style','display:none');
+        }
+    });
+    $("#zyn-select-choosse").on('change',function(){
+		var selectedValue = $(this).val();
+		$.ajax({
+			type:"post",
+			url:"__URL__/getSourse",
+			async:true,
+			data:{'selectedValue':selectedValue},
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				$('#tableID tbody').remove();
+				var sRows = '';
+				for( var i in data ){
+					var sRow = '<tr>'+
+									'<td style="display: none;">'+data[i].announcement_id+'</td>'+
+									'<td>'+data[i].announcement_version_number+'</td>'+
+									'<td>'+data[i].announcement_title+'</td>'+
+									'<td>'+data[i].send_datetime+'</td>'+											
+									'<td>'+data[i].announcement_check_state+'</td>'+	
+									'<td>'+data[i].error_message+'</td>'+	
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-delete1" onclick="clickDelete(this)">删除</span>'+
+									'</td>'+
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-editor3" onclick="clickCheck(this)">编辑</span>'+
+									'</td>'+
+									'<td>'+
+										'<span class=" btn btn-xs btn-default" style="width: 60px;" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
+									'</td>'+
+								'</tr>'
+					sRows += sRow;
+					
+				}
+				$('#tableID').append('<tbody></tbody>');
+				$('#tableID tbody').html(sRows);
+				sortList();
+			}
+		});
+	});
+	function clickEdit(obj){
+		if($("#zyn-select-choosse").find("option:selected").val() == 1){
+			Dialog.error('全部公告无法编辑和删除');
+				return;
+		}
+//		console.log(obj.parentNode.parentNode);
+		else {
+			var objpp = obj.parentNode.parentNode;
+			var msg = [];
+//			console.log(objpp.children);
+//			console.log(objpp.children.length);
+			for (var i=0 ; i<objpp.children.length;i++){
+//				console.log(objpp.children[i].innerText)
+				msg[i] = objpp.children[i].innerText;
+			}
+			if(msg[3] == '通过'){
+				Dialog.error('通过后的公告无法编辑和删除');
+				return;
+			}
+			var id = msg[0];
+//			console.log(id);
+		location.href = SCOPE.edit_url+'?id='+id;	
+		}
+	}
+	function clickDelete(obj){
+	if($("#zyn-select-choosse").find("option:selected").val() == 1){
+		Dialog.error('全部公告无法编辑和删除');
+			return;
+	}
+	else {
+//			console.log(obj.parentNode.parentNode);
+			var objpp = obj.parentNode.parentNode;
+			var msg = [];
+//			console.log(objpp.children);
+//			console.log(objpp.children.length);
+			for (var i=0 ; i<objpp.children.length;i++){
+//				console.log(objpp.children[i].innerText)
+				msg[i] = objpp.children[i].innerText;
+			}
+			if(msg[4] != '未审核'){
+//				console.log(msg[4]);
+				Dialog.error('不是未审核的公告无法删除');
+				return;
+			}
+			var id = msg[0];
+			var num = msg[1];
+		var url = SCOPE.set_status_url;;
+		var postData = {};
+		postData['id'] = id;
+		postData['num'] = num;	
+		postData['state'] = '关闭';
+//		console.log(postData);
+		Dialog.confirm('是否确认删除数据？',function(){
+			$.ajax({
+				type:"post",
+				url:url,
+				async:true,
+				data:postData,
+				dataType:'json',
+				success:function(result){
+					if(result.status == SUCCESS){
+						return Dialog.success(result.msg,SCOPE.success_refresh_url);
+					}
+					return Dialog.error(result.msg);
+				}
+			});
+		});	
+	}
+	}
+	function clickCheck(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+		console.log(id);
+		var num = objpp.children[1].innerText;
+		location.href = '__URL__/details'+'?id='+id+'&num='+num;
+	}
+	function clickHistory(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+//		console.log(id);
+		var postData={};
+		location.href = '__URL__/history'+'?id='+id;	
+	}
+	
+	function sortList(){
+  		$("#tableID").trigger("updateCache");
+  		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},2:{sorter:false}}});
+ 	 
+	};
+	$(function(){
+	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},2:{sorter:false}}});
+ 	 
+	});
+</script>
+	
+<include file="Index/footer"/>

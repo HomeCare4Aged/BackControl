@@ -1,0 +1,138 @@
+<?php
+$admin = session(C('ADMIN_SESSION'));
+$user = $admin['hospital_user_name'];
+$where = array(
+	'community_hospitals_id' => array('eq',$admin['community_hospitals_id']),
+);
+$admin = array(
+		'hospital_user_id' => $nav_admin['hospital_user_id'],
+	);
+$res = D('h_hospitals_info')->where($where)->find();
+	$hospital = $res["community_hospitals_name"];
+	$nav_user = D('h_user_limit_info')->where($admin)->find();
+	$role_menu_ids = $nav_user['limit_id'];
+	$nav_menus = D('a_limit_type_info')->select($role_menu_ids);
+	$role = D('h_user_limit_info')->find($admin['hospital_user_id']);
+	//设置首页控制器
+	$index = 'index';
+?>
+<!--后台管理系统的导航栏-->
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="navbar-header">
+		<a href="#" class="navbar-brand">居家养老服务平台管理系统</a>
+	</div>
+	<ul class="nav navbar-right top-nav" style="padding-right:20px ;">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<i class="fa fa-fw fa-user"></i>{$hospital} | {$user}<i class="caret"></i>
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="__MODULE__/Login/logout"><i class="fa fa-fw fa-power-off "></i>注销</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<div class="navbar-default sidebar" role="navigation">
+		<div class="sidebar-nav navbar-collapse">
+			<ul class="nav in" id="side-menu">
+				<li>
+					<a href="__MODULE__/Index/index"><i class="fa fa-fw fa-home"></i>首页</a>
+				</li>
+				<volist name="nav_menus" id="pvo">
+					<if condition="$pvo['limit_num'] eq 0">
+						<li>
+							<a href="__MODULE__/{$pvo.limit_controller}/{$pvo.limit_action}">
+								<i class="fa fa-fw fa-cogs"></i>{$pvo.limit_event}
+							</a>
+						</li>
+					</if>
+					<if condition="$pvo['limit_num'] eq 1">
+						<li>
+							<a href="#">
+								<i class="fa fa-fw fa-cogs"></i>{$pvo.limit_event}
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<volist name="nav_menus" id="vo">
+									<if condition="$vo['limit_num'] eq $pvo['limit_tyoe_id']">
+										<li>
+											<a href="__MODULE__/{$vo.limit_controller}/{$vo.limit_action}">
+												<i class="fa fa-fw fa-cog"></i>{$vo.limit_event}
+											</a>
+										</li>
+									</if>
+								</volist>
+							</ul>
+								<!-- /.nav-second-level二级目录下拉 -->
+						</li>
+					</if>
+				</volist>
+				
+				
+				
+				
+				
+				
+				<!--<li>
+					<a href="__MODULE__/Community/index"><i class="icon-building"></i>社区管理</a>
+				</li>
+				<li>
+					<a href="__MODULE__/HospitalRegister/index"><i class="fa fa-fw fa-edit"></i>账号管理</a>
+				</li>
+				<li>
+					<a><i class="fa fa-fw fa-film"></i>商铺管理<span class="fa arrow"></span></a>
+					<ul class="nav nav-second-level">
+						<li>
+							<a href="__MODULE__/Store/index"><i class="fa fa-fw fa-newspaper-o"></i>浏览商铺</a>
+						</li>
+						<li>
+							<a href="__MODULE__/Store/check"><i class="fa fa-fw fa-university"></i>商铺审核</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="__MODULE__/Announcement/index"><i class="fa fa-fw fa-newspaper-o"></i>公告管理<span class="fa arrow"></span></a>
+					<ul class="nav nav-second-level">
+						<li>
+							<a href="__MODULE__/Announcement/index"><i class="fa fa-fw fa-newspaper-o"></i>公告浏览</a>
+						</li>
+						<li>
+							<a href="__MODULE__/Announcement/check"><i class="fa fa-fw fa-university"></i>公告审核</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a><i class="fa fa-fw fa-film"></i>视频管理<span class="fa arrow"></span></a>
+					<ul class="nav nav-second-level">
+						<li>
+							<a href="__MODULE__/Video/index"><i class="fa fa-fw fa-newspaper-o"></i>视频浏览</a>
+						</li>
+						<li>
+							<a href="__MODULE__/Video/check"><i class="fa fa-fw fa-university"></i>视频审核</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a><i class="fa fa-fw fa-film"></i>类型管理<span class="fa arrow"></span></a>
+					<ul class="nav nav-second-level">
+						<li>
+							<a href="__MODULE__/Type/index"><i class="fa fa-fw fa-newspaper-o"></i>视频类型管理</a>
+						</li>
+						<li>
+							<a href="__MODULE__/Type/notice"><i class="fa fa-fw fa-university"></i>公告类型管理</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="__MODULE__/Power/index"><i class="fa fa-fw fa-film"></i>员工管理</a>
+				</li>-->
+				<li>
+					<a href="__MODULE__/Account/index"><i class="fa fa-fw fa-film"></i>账号信息</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+				

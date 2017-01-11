@@ -1,0 +1,84 @@
+<!--头尾分离    忽略错误信息 运行可用-->
+<include file="Index/header" />
+<div id="wrapper">
+	<include file="Index/nav" />
+	<div id="page-wrapper">
+		
+		<div class="container-fluid">
+			
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							<a href="__URL__/check">公告审核</a>
+						</li>
+						<li class="active">
+							<i class="fa fa-fw fa-edit"></i>
+							详细信息
+						</li>
+					</ol>
+				</div>
+			</div>
+	<!--.row面包屑导航-->
+	
+		<div class="row">
+			<div class="col-md-7 col-md-offset-3">
+				<label  class="control-label"><h4>公告标题：{$announcement.announcement_title}</h4></label>	<br />
+				<label  class="control-label"><h4>公告类型：{$announcement.announcement_type_name}</h4></label><br />
+				<label  class="control-label"><h4>发布用户：{$announcement.announcement_sender_id |getRoleById}</h4></label><br />
+				<label  class="control-label"><h4>所属医院：{$announcement.community_hospitals_name }</h4></label><br />
+				<label  class="control-label"><h4>发布时间：{$announcement.send_datetime}</h4></label><br />
+				<label  class="control-label"><h4>公告内容：</label><br/><textarea disabled="disabled" rows="10" cols="43">{$announcement.announcement_content}</textarea><br />
+				<label  class="control-label"><h4>公告图片：</h4></label><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<img style="height:200px;" src="{$announcement.announcement_picture}" style="display: none; margin-bottom:;"><br />	<br />
+				<label  class="control-label"><h4>撤销日期：{$announcement.announcement_end_date}</h4></label><br />
+			</div>
+			<div class="col-md-5 col-md-offset-4">
+				<form id="zyn-form-addtwo">
+					<input type="hidden" name="idtwo" value="{$announcement.announcement_id}"/>
+					<input type="hidden" name="numtwo" value="{$announcement.announcement_version_number}"/>
+				</form>
+				<button type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if>  class="btn btn-primary btn-lg" data-toggle="modal" id="zyn-btn-add-submittwo">通过</button>&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if> class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" attr-id="{$announcement.announcement_id}">驳回</button>
+			</div>
+			<!-- --------------------------------模态框开始---------------------------- -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">请输入驳回原因</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form id="zyn-form-add">
+			        	<textarea name="error_message" rows="2" cols="75"></textarea>
+			        	<input type="hidden" name="id" value="{$announcement.announcement_id}" />
+			        	<input type="hidden" name="num" value="{$announcement.announcement_version_number}"/>
+			        </form>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			        <button type="button" class="btn btn-primary" id="zyn-btn-add-submit">提交</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+<!---------------------------------模态框关闭--------------------------------->
+		</div>
+		<!--。row表单-->
+		</div>
+	</div>
+</div>	
+
+<script>
+	var SCOPE = {
+		'add_url':'__URL__/add',
+		'success_jump_url':'__URL__/check',
+		'ajax_upload_swf':'__JS__/vendor/uploadify/uploadify.swf',
+		'ajax_upload_url':'__URL__/ajaxUploadImage', 
+	};
+</script>
+		
+<include file="Index/footer" />

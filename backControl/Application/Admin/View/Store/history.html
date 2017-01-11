@@ -1,0 +1,142 @@
+<include file="Index/header"/>
+<style>
+	td{
+		 text-align:center;
+	}
+</style>
+
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li class="">
+							<i class="fa fa-fw fa-edit"></i>
+							<a href="__URL__/index">返回</a>
+						</li>
+						<li class="">
+							<i class="fa fa-fw fa-edit"></i>
+							审核记录
+						</li>
+						
+					</ol>
+				</div>				
+			</div><!--.row面包屑导航   -->
+			<div class="row">
+				<div class="col-md-12">
+						<div class="table-responsive">
+							<form id="zyn-form-list">
+								<table class="table table-bordered table-hover zyn-table-list" id="tableID">
+									<thead>
+										<tr class="btn-primary">
+											<td style="display: none;"></td>
+											<td>版本号</td>
+											<td>商店名</td>
+											<td>商店类型</td>										
+											<td>营业时间</td>
+											<td>状态</td>																				
+											<td>详细信息</td>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="store" id="vo">
+											<tr>
+												<td style="display: none;">{$vo.store_shop_id}</td>
+												<td>{$vo.store_version_number}</td>
+												<td>{$vo.store_shop_name}</td>
+												<td>{$vo.store_type_id}</td>											
+												<td>{$vo.store_begin_time}~{$vo.store_end_time}</td>	
+												<td>{$vo.store_check_state_id}</td>
+												<td>
+													<span class="glyphicon glyphicon-check btn btn-xs btn-info" id="zyn-span-editor3" onclick="clickCheck(this)"></span>
+												</td>
+												
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+					<!-- 模态框（Modal） --------------------------------->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+										&times;
+									</button>
+									<h4 class="modal-title" id="myModalLabel">
+										详情信息
+									</h4>
+								</div>
+							</div><!-- /.modal-content -->
+						</div><!-- /.modal -->
+					</div>
+					<!-------------------------------------------------->
+				
+			</div>
+		</div>
+	</div>
+</div>	
+<script>
+	var SCOPE={
+		'add_url':'__URL__/add',
+		'edit_url':'__URL__/edit',
+		'set_status_url':'__URL__/setStatus',
+		'list_order_url':'__URL__/listOrder',
+		'success_refresh_url':'__ACTION__',
+	};
+	$("#zyn-select-type").on('change',function(){
+		var selectedValue = $(this).val();
+		$.ajax({
+			type:"post",
+			url:"__URL__/getData",
+			async:true,
+			data:{'selectedValue':selectedValue},
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				$('#tableID tbody').remove();
+				var sRows = '';
+				for( var i in data ){
+					var sRow = '<tr>'+
+									'<td style="display: none;">'+data[i].store_shop_id+'</td>'+
+									'<td>'+data[i].store_version_number+'</td>'+
+									'<td>'+data[i].store_shop_name+'</td>'+
+									'<td>'+data[i].store_type_id+'</td>'+										
+									'<td>'+data[i].store_begin_time+'~'+data[i].store_end_time+'</td>'+	
+									
+									'<td>'+data[i].store_check_state_id+'</td>'+
+									'<td>'+
+										'<span class="glyphicon glyphicon-check btn btn-xs btn-info" id="zyn-span-editor3" onclick="clickCheck(this)"></span>'+
+									'</td>'+
+									
+								'</tr>';
+					sRows += sRow;
+				}
+				$('#tableID').append('<tbody></tbody>');
+				$('#tableID tbody').html(sRows);
+			}
+		});
+	});
+//	
+	function clickCheck(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+		console.log(id);
+		var num = objpp.children[1].innerText;
+		location.href = '__URL__/details'+'?id='+id+'&num='+num;
+	}
+	function clickHistory(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+//		console.log(id);
+		var postData={};
+		location.href = '__URL__/history'+'?id='+id;	
+	}
+</script>
+	
+<include file="Index/footer"/>

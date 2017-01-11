@@ -1,0 +1,183 @@
+
+<include file="Index/header" />
+
+<div id="wrapper">
+	<include file="Index/nav" />
+	<div id="page-wrapper">
+		
+		<div class="container-fluid">
+			
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-pencil"></i>
+							审核视频
+						</li>
+					</ol>
+				</div>
+			</div>
+	<!--.row面包屑导航-->
+	        <ul class="nav nav-tabs">
+				<li class="active"><a href="#movie1" data-toggle="tab">待审核视频</a></li>
+				<li><a href="#movie2" data-toggle="tab">我审核的视频</a></li>
+				<li><a href="#movie3" data-toggle="tab">全部审核视频</a></li>
+			</ul>
+			<div class="tab-content" style="margin-top: 20px;">
+				<div class="tab-pane active" id="movie1">
+					<div class="row">
+		            	<div class="col-md-12">
+		            		<div class="table-responsive">
+		            			<form id="zh-form-list">
+									<table width="100%" class="table table-bordered table-hover zyn-table-list" id="tableID">
+										<thead>
+											<tr class="btn-primary">
+												<td width="200px" align="left">视频标题<span class="glyphicon glyphicon-sort"></span></td>
+												<td>版本号</td>
+												<td>发布人</td>
+												<td>发布时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td colspan="2">操作</td>
+											</tr>
+										</thead>
+										<tbody>
+											<volist name="ancheckstate" id="vo">
+											    <tr>
+											    	<td style="display: none;">{$vo.video_id}</td>
+											    	<td>{$vo.video_title}</td>
+													<td>{$vo.video_num}</td>
+													<td>{$vo.sender_id|getRoleById}</td>
+													<td>{$vo.send_datetime}</td>
+													<td>
+														<input id="zyn-span-edit" attr-id="{$vo.video_id}&num={$vo.video_num}" value="审核" type="button" class="btn btn-default btn-xs"/>
+													</td>
+													<td>
+														<input onclick="clickHistory(this)" value="历史版本" type="button" class="btn btn-default btn-xs"/>
+													</td>
+											    </tr>
+											</volist>
+										</tbody>
+									</table>
+								</form>
+		            			<nav>
+									<ul class="pagination">
+										{$pageRes}
+									</ul>
+								</nav>
+		            		</div>
+		            	</div>
+		            </div>
+		        </div>
+		        <div class="tab-pane" id="movie2">
+					<div class="row">
+		            	<div class="col-md-12">
+		            		<div class="table-responsive">
+		            			<form id="zh-form-list">
+									<table width="100%" class="table table-bordered table-hover zyn-table-list" id="tableID2">
+										<thead>
+											<tr class="btn-primary">
+												<td width="200px" align="left">视频标题<span class="glyphicon glyphicon-sort"></span></td>
+												<td>版本号</td>
+												<td>发布时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td>审核状态</td>
+												<td>审核时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td>操作</td>
+											</tr>
+										</thead>
+										<tbody>
+											<volist name="ancheckstate2" id="vo">
+											    <tr>
+											    	<td>{$vo.video_title}</td>
+													<td>{$vo.video_num}</td>
+													<td>{$vo.send_datetime}</td>
+													<td>{$vo.video_check_state}</td>
+													<td>{$vo.video_check_time}</td>
+													<td>
+														<input id="zyn-span-edit" attr-id="{$vo.video_id}&num={$vo.video_num}" value="详情" type="button" class="btn btn-default btn-xs"/>
+													</td>	
+											    </tr>
+											</volist>
+										</tbody>
+									</table>
+								</form>
+		            			<nav>
+									<ul class="pagination">
+										{$pageRes2}
+									</ul>
+								</nav>
+		            		</div>
+		            	</div>
+		            </div>
+				</div>
+				<div class="tab-pane" id="movie3">
+					<div class="row">
+		            	<div class="col-md-12">
+		            		<div class="table-responsive">
+		            			<form id="zh-form-list">
+									<table width="100%" class="table table-bordered table-hover zyn-table-list" id="tableID3">
+										<thead>
+											<tr class="btn-primary">
+												<td width="200px" align="left">视频标题<span class="glyphicon glyphicon-sort"></span></td>
+												<td>版本号</td>
+												<td>发布时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td>审核状态</td>
+												<td>审核时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td>审核人员</td>
+												<td>操作</td>
+											</tr>
+										</thead>
+										<tbody>
+											<volist name="ancheckstate3" id="vo">
+											    <tr>
+											    	<td>{$vo.video_title}</td>
+													<td>{$vo.video_num}</td>
+													<td>{$vo.send_datetime}</td>
+													<td>{$vo.video_check_state}</td>
+													<td>{$vo.video_check_time}</td>
+													<td>{$vo.check_user_id|getRoleById}</td>
+													<td>
+														<input id="zyn-span-edit" attr-id="{$vo.video_id}&num={$vo.video_num}" value="详情" type="button" class="btn btn-default btn-xs"/>
+													</td>	
+											    </tr>
+											</volist>
+										</tbody>
+									</table>
+								</form>
+		            			<nav>
+									<ul class="pagination">
+										{$pageRes3}
+									</ul>
+								</nav>
+		            		</div>
+		            	</div>
+		            </div>
+				</div>
+		    </div>    
+		</div>
+	</div>
+</div>	
+
+<script>
+	var SCOPE = {
+		'edit_url':'__URL__/edit',
+		'set_status_url':'__URL__/setStatus',
+	};
+	function sortList(){
+  		$("#tableID").trigger("updateCache");
+//		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},2:{sorter:false}}});
+	};
+	$(function(){
+	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},2:{sorter:false},1:{sorter:false}}});
+	$("#tableID2").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},1:{sorter:false}}});
+	$("#tableID3").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},1:{sorter:false}}});
+	});
+	function clickHistory(obj){
+		var objpp = obj.parentNode.parentNode;
+		var id = objpp.children[0].innerText;
+		var postData={};
+		location.href = '__URL__/history1'+'?id='+id;	
+	}
+</script>
+		
+<include file="Index/footer" />
+
+

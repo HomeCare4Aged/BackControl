@@ -1,0 +1,158 @@
+<include file="Index/header"/>
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<!--面包屑导航.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							<a href="__URL__/check">返回</a>
+						</li>
+						<li class="active">
+							<i class="fa fa-fw fa-edit"></i>
+							商铺审核
+						</li>
+					</ol>
+				</div>
+			</div>
+			<!--表单.row-->
+			<div class="row">
+				<div style="width:250px;position: absolute;margin-left: 15px;">
+					<div>
+						<div class="form-group">
+							<h4><b style="color:#00AA00;">{$store.store_shop_name}</b></h4>
+						</div>
+						<img src="{$store.store_shop_picture}" alt="" id="zyn-image-show-thumb" width="220px" />
+					</div>
+				</div>
+		        <div class="col-sm-8 col-sm-offset-4">
+					<form class="form-horizontal">
+						<div style="display: inline-block;">
+							<div class="form-group">
+								<label class="control-label ">商铺类型:</label>
+								<label class="control-label">{$store.store_type_id}</label>
+							</div>
+							<div class="form-group">
+								<label class="control-label">联系人:</label>
+								<label class="control-label">{$store.store_contact_user_name}</label>
+							</div>
+							<div class="form-group">
+								<label class="control-label">联系电话:</label>
+								<label class="control-label">{$store.store_contact_user_phone}</label>
+							</div>
+							<div class="form-group">
+								<label class="control-label">营业时间:</label>
+								<label class="control-label">{$store.store_begin_time}~{$store.store_end_time}</label>
+							</div>
+						</div>
+						
+						<div style="float: right; padding-right: 150px;">
+							
+							<div class="form-group">
+								<label class=" control-label">运费:</label>
+								<label class="control-label">{$store.store_carriage}</label>
+							</div>
+							<div class="form-group">
+								<label class=" control-label">配送距离:</label>
+								<label class="control-label">{$store.store_send_distance}</label>
+							</div>
+							<div class="form-group">
+								<label class=" control-label">是否上传验证信息:</label>
+								<label class="control-label">{$store.store_update_check_info}</label>
+							</div>
+							<div class="form-group">
+								<label class=" control-label">审核状态:</label>
+								<label class="control-label">{$store.store_check_state_id}</label>
+	    							<button <if condition="$store['store_check_state_id'] eq 已通过 || $store['store_check_state_id'] eq 未审核">style="display:none ;"</if> type="button" class="btn btn-xs btn-info" 
+		           						 data-container="body" data-toggle="popover" data-placement="bottom"
+		           						 data-content="{$store.store_check_retroaction}">
+		      							反馈信息
+	    							</button>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label ">商铺地址:{$store.store_shop_address}</label>
+							<label class="control-label"></label>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group" style="border: 1px solid #dddddd;position: relative;margin-top: 35px">
+						<label class="label_name" style="background-color: #FFF;position: absolute;top: -20px;font-size: 18px;left: 20px !important;padding: 5px 20px;">商铺简介</label>
+						<div style="margin: 20px;line-height: 24px;">
+						{$store.store_shop_introduction}
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4 col-sm-offset-4">
+			<form id="zyn-form-addtwo">
+				<input type="hidden" name="idtwo" value="{$store.store_shop_id}"/>
+				<input type="hidden" name="numtwo" value="{$store.store_version_number}"/>
+			</form>
+			<button <if condition="$store['store_check_state_id'] eq 已通过 || $store['store_check_state_id'] eq 未通过">style="display:none ;"</if> type="button" id="zyn-btn-add-submittwo" class="btn btn-primary">通过</button>
+			<button <if condition="$store['store_check_state_id'] eq 已通过 || $store['store_check_state_id'] eq 未通过">style="display:none ;"</if> type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">驳回</button>
+			<input type="button" class="btn btn-group" onclick="javascript:history.back(-1);" value="返回上一页">
+		</div>
+		
+<script>
+$(function (){
+    $("[data-toggle='popover']").popover();
+});
+</script>
+</div>
+<!--—————————————————————————————————————————————————————————————————————模态框———————————————————————————————————————————————————————————————————-->		
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="myModalLabel">请输入驳回原因</h4>
+					</div>
+					<div class="modal-body">
+						<form id="zyn-form-add">
+							<textarea name="error_message" rows="6" cols="75"></textarea>
+							<input type="hidden" name="id" value="{$store.store_shop_id}" />
+							<input type="hidden" name="num" value="{$store.store_version_number}"/>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" id="zyn-btn-add-submit">提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+<!--————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————-->
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="__JS__/fz-video.js" ></script>
+<script>
+	var SCOPE = {
+		'add_url':'__URL__/add',
+		'success_jump_url':'__URL__/check',
+	};
+	 var FZ_VIDEO = new createVideo(
+        "tl_player",  //容器的id
+     {
+          url: 'http://127.0.0.1/homecare1/UploadAudios/load.mp4',  //视频地址
+         autoplay:false,          //是否自动播放
+      }
+    );
+    $(function () { 
+		$("[data-toggle='popover']").popover();
+	});
+</script>
+<include file="Index/footer"/>
+
+
+

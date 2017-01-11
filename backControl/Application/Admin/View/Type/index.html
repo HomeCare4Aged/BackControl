@@ -1,0 +1,192 @@
+<include file="Index/header"/>
+
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<!--面包屑导航.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							视频类型列表
+						</li>
+					</ol>
+				</div>
+			</div>
+			<div class="row zyn-div-search">
+            	<div class="col-md-4">
+	            	<form action="__ACTION__" method="post" class="form-horizontal">
+	            		<div class="input-group">
+	            			<span class='input-group-addon'>搜索</span>
+	            				<input type="text" name="search" id="" value="" placeholder="请输入视频类型" style="line-height: 28px;width: 248px;"/>
+	            			<div class="input-group-btn">
+		            			<button type="submit" class="btn btn-primary">
+		            				<span class='glyphicon glyphicon-search'></span>
+		            			</button>
+	            			</div>
+	            			<div style="padding-left: 15px;">
+	            				<button type="button" class="btn btn-primary" onclick="location.href = '__URL__/index'">刷新</button>
+	            			</div>
+	            		</div>
+	            	</form>
+	            </div>
+	            <div class="col-sm-4 col-sm-offset-1">
+				<button type="button" class="btn btn-group btn-primary" data-toggle="modal" data-target="#myModal">新增视频类型</button>
+				</div>
+            </div>
+            <br/>
+			<!--表单.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<form id="zh-form-list">
+							<table class="table table-bordered table-hover zyn-table-list" id="table">
+								<thead>
+									<tr class="btn-primary">
+										<td style="width: 50%;">视频类型</td>
+										<td colspan="2">操作</td>
+									</tr>
+								</thead>
+								<tbody>
+									<volist name="type" id="vo">
+									    <tr>
+											<td>{$vo.video_type_name}</td>
+											<td>
+												<input data-toggle="modal" data-target="#Modal" value="编辑" attr-id="{$vo.video_type_id}" type="button" class="btn btn-default btn-xs" onClick="editClick(this)"/>
+											</td>
+											<td>	
+												<input id="zyn-span-trash" attr-id="{$vo.video_type_id}" value="删除" type="button" class="btn btn-default btn-xs" />
+											</td>
+									    </tr>
+									</volist>
+								</tbody>
+							</table>
+						</form>
+						<nav>
+							<ul class="pagination">
+								{$pageRes}
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">请输入新增视频类型</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="zh-input-video_type_name" class="control-label col-sm-3">视频类型:</label>
+						<div class="col-sm-7">
+							<input id="zh-input-video_type_name" class="form-control" type="text" 
+							    name="video_type_name" placeholder="请输入视频类型"/>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" onclick="update()">提交</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">请输入修改视频类型</h4>
+			</div>
+			<div class="modal-body">
+				<form id="zyn-form-submit" class="form-horizontal">
+					<div class="form-group">
+						<label for="zh-input-video_type_name" class="control-label col-sm-3">视频类型:</label>
+						<div class="col-sm-7">
+							<input id="zh-video_type_name" class="form-control" type="text" 
+							    name="video_type_name" placeholder="请输入视频类型"/>
+						</div>
+						<input type="hidden" id="zh-input-id" name="id"/>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" onclick="update1()">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var SCOPE = {
+		'set_status_url':'__URL__/setStatus',
+		'success_jump_url':'__ACTION__',
+		'video_add':'__URL__/videoadd',
+	};
+	 function update() {  
+    //获取模态框数据  
+    var name = $('#zh-input-video_type_name').val();
+	Dialog.confirm('是否确定提交数据',function(){
+    $.ajax({  
+        type: "post",  
+        url:SCOPE.video_add,  
+        data: "video_type_name=" + name,  
+        dataType: 'json',  
+        contentType: "application/x-www-form-urlencoded; charset=utf-8",  
+        success: function(result){  
+				//链接服务器其成功
+				console.log(typeof result);
+				if(result.status == SUCCESS){
+					//成功
+					result.msg,location.href =SCOPE.success_jump_url;
+				}else{
+					 Dialog.error(result.msg);
+					
+				}
+			},
+    });
+    });
+};
+
+function editClick(obj){
+	var id = $(obj).attr("attr-id");
+	var tds = $(obj).parent().parent().find('td');
+	$('#zh-input-id').val(id); 
+    $('#zh-video_type_name').val(tds.eq(0).text());  
+	$().modal('show');
+}
+ function update1() {  
+    //获取模态框数据  
+    var id = $('#zh-input-id').val();
+    var name = $('#zh-video_type_name').val();
+	Dialog.confirm('是否确定提交数据',function(){
+    $.ajax({  
+        type: "post",  
+        url:SCOPE.video_add,  
+        data: "id=" + id + "&video_type_name=" + name,  
+        dataType: 'json',  
+        contentType: "application/x-www-form-urlencoded; charset=utf-8",  
+        success: function(result){  
+				//链接服务器其成功
+				if(result.status == SUCCESS){
+					//成功
+					result.msg,location.href =SCOPE.success_jump_url;
+				}else{
+					 Dialog.error(result.msg);
+					
+				}
+			},
+		});
+    });  
+};
+</script>
+<include file="Index/footer"/>
