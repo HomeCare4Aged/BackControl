@@ -53,10 +53,20 @@ function cDebug($data){
  //根据角色id得到角色名
  function getRoleById($admin_role_id){
  	$role = D('h_hospital_user_info')->find($admin_role_id);
+// 	cDebug($role);
  	$roleName = $role['hospital_user_name'];
  	return $roleName;
  }
  
+ //根据商铺类型id得到类型名
+ function getTypeById($admin_role_id){
+// 	cDebug($admin_role_id);
+ 	
+ 	$role = D('s_store_shop_type')->find($admin_role_id);
+// 	cDebug($role);
+ 	$roleName = $role['store_type_name'];
+ 	return $roleName;
+ }
  
  //生成uuid方法
  function get_uuid() {

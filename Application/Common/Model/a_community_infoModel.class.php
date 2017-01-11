@@ -65,8 +65,8 @@ class a_community_infoModel extends Model{
 	}
 	
 	public function getHospitalAccountInfo($page,$pageSize){
+			$this->order('send_datetime desc') ;     //排序规则
 			//处理分页的业务
-			$this->order('send_datetime asc') ; 
 			if ($page === null || $pageSize !== null){
 				$page = $page !== null  ? $page : 1 ;
 				$pageSize = $pageSize !== null  ? $pageSize : 10 ;

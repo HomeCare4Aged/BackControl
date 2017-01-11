@@ -1,0 +1,68 @@
+<include file="Index/header"/>
+		
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							<a href="__URL__/index">管理员列表</a>
+						</li>
+						<li class="active">
+							<i class="fa fa-fw fa-edit"></i>
+							编辑管理员
+						</li>
+					</ol>
+				</div>
+			</div><!--.row面包屑导航-->
+			<div class="col-sm-10">
+				<form id="zyn-form-add" class="form-horizontal">
+					<div class="form-group">
+						<label for="zyn-input-hospital_user_name" class="control-label col-sm-4">管理员姓名:</label>
+						<div class="col-sm-5">
+							<input id="zyn-input-hospital_user_name" class="form-control" type="text" name="hospital_user_name" 
+								placeholder="请输入管理员姓名" value="{$user.hospital_user_name}"/>
+						</div>
+						<div class="col-sm-3">
+							<p class="zyn-p-validate-result" attr-validate = "hospital_user_name"></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="zyn-input-hospital_user_no" class="control-label col-sm-4">管理员工号:</label>
+						<div class="col-sm-5">
+							<input id="zyn-input-hospital_user_no" class="form-control" type="text" name="hospital_user_no" 
+								placeholder="请输入管理员工号" value="{$user.hospital_user_no}"/>
+						</div>
+						<div class="col-sm-3">
+							<p class="zyn-p-validate-result" attr-validate = "hospital_user_no"></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="col-sm-4 control-label">状态:</label>
+						<div class="col-sm-5">
+							<input type="radio" name="state" value="开启" <if condition="$user['state'] eq 开启">checked</if> />开启
+							<input type="radio" name="state" value="关闭" <if condition="$user['state'] eq 关闭">checked</if>/>关闭
+						</div>
+					</div>
+					<div class="row">
+						<div class="col=sm-6 col-sm-offset-5">
+							<button type="button" id="zyn-btn-add-submit" class="btn btn-primary">确定</button>
+							<input type="button" class="btn btn-group" onclick="javascript:history.back(-1);" value="取消">
+						</div>
+					</div>
+					<input type="hidden" value="{$user.hospital_user_id}" name="id"/>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>		
+<script>
+	var SCOPE = {
+		'add_url':'__URL__/add',
+		'success_jump_url':'__URL__/index',
+	};
+</script>	
+<include file="Index/footer"/>

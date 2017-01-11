@@ -47,7 +47,7 @@ $res = D('h_hospitals_info')->where($where)->find();
 							</a>
 						</li>
 					</if>
-					<if condition="$pvo['limit_num'] eq 1">
+					<if condition="$pvo['limit_num'] eq -1">
 						<li>
 							<a href="#">
 								<i class="fa fa-fw fa-cogs"></i>{$pvo.limit_event}

@@ -35,16 +35,26 @@
 					<img style="height:200px;" src="{$announcement.announcement_picture}" style="display: none; margin-bottom:;"><br />	<br />
 				<label  class="control-label"><h4>撤销日期：{$announcement.announcement_end_date}</h4></label><br />
 			</div>
-			<div class="col-md-5 col-md-offset-4">
+			<div class="form-group col-md-5 col-md-offset-3">
+				<form id="zyn-form-add" style="display: none;">
+			        <textarea name="error_message" rows="4" cols="55" placeholder="请输入驳回原因"></textarea>
+			        <input type="hidden" name="id" value="{$announcement.announcement_id}" />
+			        <input type="hidden" name="num" value="{$announcement.announcement_version_number}"/>
+			        <button type="button" class="btn btn-primary  col-md-offset-3" id="zyn-btn-add-submit">提交</button>
+			        <button id="zyn-btn-abolish" type="button" class="btn btn-warning" >取消</button>
+			     </form>
+			</div>
+			<div id="zyn-div-submit" style="display: outo;" class="col-md-5 col-md-offset-4">
 				<form id="zyn-form-addtwo">
 					<input type="hidden" name="idtwo" value="{$announcement.announcement_id}"/>
 					<input type="hidden" name="numtwo" value="{$announcement.announcement_version_number}"/>
 				</form>
-				<button type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if>  class="btn btn-primary btn-lg" data-toggle="modal" id="zyn-btn-add-submittwo">通过</button>&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if> class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" attr-id="{$announcement.announcement_id}">驳回</button>
+				<button type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if>  class="btn btn-primary" data-toggle="modal" id="zyn-btn-add-submittwo">通过</button>&nbsp;
+				<button id="zyn-btn-reject" type="button" <if condition="$announcement['announcement_check_state'] neq 未审核">style="display:none ;"</if> class="btn btn-danger" data-toggle="modal" data-target="#myModal" attr-id="{$announcement.announcement_id}">驳回</button>&nbsp;
+				<input type="button" class="btn btn-group" onclick="javascript:history.back(-1);" value="返回上一页">
 			</div>
 			<!-- --------------------------------模态框开始---------------------------- -->
-			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
@@ -61,10 +71,11 @@
 			      <div class="modal-footer">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 			        <button type="button" class="btn btn-primary" id="zyn-btn-add-submit">提交</button>
+			        
 			      </div>
 			    </div>
 			  </div>
-			</div>
+			</div>-->
 <!---------------------------------模态框关闭--------------------------------->
 		</div>
 		<!--。row表单-->
@@ -79,6 +90,15 @@
 		'ajax_upload_swf':'__JS__/vendor/uploadify/uploadify.swf',
 		'ajax_upload_url':'__URL__/ajaxUploadImage', 
 	};
+	
+	$('#zyn-btn-reject').click(function(){
+        $('#zyn-form-add').attr('style','display:auto');
+        $('#zyn-div-submit').attr('style','display:none');
+    });
+    $('#zyn-btn-abolish').click(function(){
+        $('#zyn-form-add').attr('style','display:none');
+        $('#zyn-div-submit').attr('style','display:auto');
+    });
 </script>
 		
 <include file="Index/footer" />

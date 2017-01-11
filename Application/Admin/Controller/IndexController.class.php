@@ -8,7 +8,6 @@ class IndexController extends CommonController {
     	
     	//筛选掉已经删除的数据
     	    'status' => array('neq',-1),
-    	    'community_hospitals_name' => array('neq','总后台'),
     	);
  
     	//分页逻辑

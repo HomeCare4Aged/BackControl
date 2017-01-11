@@ -1,3 +1,6 @@
+<?php
+	$selectedValue1=session('selectedValue1');
+?>
 <include file="Index/header"/>
 <style>
 	td{
@@ -26,24 +29,24 @@
 						<div class="form-group">
 							<div class="col-sm-2">
 								<select name="zyn-select-type" id="zyn-select-type" class="form-control">
-									<option value="0"  selected="selected">全部状态</option>
-									<option value="1">未审核</option>
-									<option value="2">通过</option>
-									<option value="3">未通过</option>
+									<option value="0"<if condition="$selectedValue1 eq 0"><else />selected="selected" </if>>全部状态</option>
+									<option value="1"<if condition="$selectedValue1 eq 1">selected="selected"</if>>未审核</option>
+									<option value="2"<if condition="$selectedValue1 eq 2">selected="selected"</if>>通过</option>
+									<option value="3"<if condition="$selectedValue1 eq 3">selected="selected"</if>>未通过</option>
 								</select>
 							</div>
 							<div class="col-sm-6">
-								<form action="__ACTION__" method="post" class="form-horizontal" name="search"> 
-									<div class="input-group">
-										<span class="input-group-addon">搜索</span>
-										<input class="form-control" type="text" name="search" value="{$search}" placeholder="请输入要搜索的商店名称"/>
-										<div class="input-group-btn">
-											<button type="submit" class="btn btn-primary">
-												<span class="glyphicon glyphicon-search"></span>
-											</button>
-										</div>
+								<form  class="form-horizontal"> 
+								<div class="input-group">
+									<span class="input-group-addon">搜索</span>
+									<input id="zyn-form-search" class="form-control" type="text" name="search" value="{$search}"/>
+									<div class="input-group-btn">
+										<button id="zyn-btn-search" type="button" class="btn btn-primary">
+											<span class="glyphicon glyphicon-search"></span>											
+										</button>											
 									</div>
-								</form>
+								</div>						
+							</form>
 							</div>
 						</div>
 					</form>
@@ -56,35 +59,34 @@
 									<thead>
 										<tr class="btn-primary">
 											<td style="display: none;"></td>
-											<td>版本号</td>
-											<td>商铺名</td>
+											<td>商铺名<span class="glyphicon glyphicon-sort"></span></td>
 											<td>商铺类型</td>										
 											<td>营业时间</td>
+											<td>提交时间<span class="glyphicon glyphicon-sort"></span></td>
 											<td>状态</td>																				
-											
-											<td colspan="2">操作</td>
+											<td>审核</td>
 										</tr>
 									</thead>
 									<tbody>
 										<volist name="shop_info" id="vo">
 											<tr>
 												<td style="display: none;">{$vo.store_shop_id}</td>
-												<td>{$vo.store_version_number}</td>
-												<td>{$vo.store_shop_name}</td>
-												<td>{$vo.store_type_id}</td>											
+												<td style="text-align:left">{$vo.store_shop_name}</td>
+												<td>{$vo.store_type_id|getTypeById}</td>											
 												<td>{$vo.store_begin_time}~{$vo.store_end_time}</td>	
+												<td>{$vo.send_datetime}</td>
 												<td>{$vo.store_check_state_id}</td>
 												<td>
 													<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-editor3" onclick="clickCheck(this)">详情</span>
-												</td>
-												<td>
-													<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>
 												</td>
 											</tr>
 										</volist>
 									</tbody>
 								</table>
 							</form>
+							<ul class="pagination" id="seq">
+								{$pageRes} 
+						  </ul>
 						</div>
 					</div>
 					<!-- 模态框（Modal） --------------------------------->
@@ -128,44 +130,92 @@
 				console.log(data);
 				$('#tableID tbody').remove();
 				var sRows = '';
-				for( var i in data ){
+				for( var i in data.schedule ){
 					var sRow = '<tr>'+
-									'<td style="display: none;">'+data[i].store_shop_id+'</td>'+
-									'<td>'+data[i].store_version_number+'</td>'+
-									'<td>'+data[i].store_shop_name+'</td>'+
-									'<td>'+data[i].store_type_id+'</td>'+										
-									'<td>'+data[i].store_begin_time+'~'+data[i].store_end_time+'</td>'+	
-									
-									'<td>'+data[i].store_check_state_id+'</td>'+
+									'<td style="display: none;">'+data.schedule[i].store_shop_id+'</td>'+
+//									'<td>'+data[i].store_version_number+'</td>'+
+									'<td>'+data.schedule[i].store_shop_name+'</td>'+
+									'<td>'+data.schedule[i].store_type_id+'</td>'+										
+									'<td>'+data.schedule[i].store_begin_time+'~'+data.schedule[i].store_end_time+'</td>'+	
+									'<td>'+data.schedule[i].send_datetime+'</td>'+
+									'<td>'+data.schedule[i].store_check_state_id+'</td>'+
 									'<td>'+
 										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-editor3" onclick="clickCheck(this)">详情</span>'+
 									'</td>'+
-									'<td>'+
-										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
-									'</td>'+
+//									'<td>'+
+//										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
+//									'</td>'+
 								'</tr>';
 					sRows += sRow;
 				}
 				$('#tableID').append('<tbody></tbody>');
 				$('#tableID tbody').html(sRows);
+				sortList();
+				$('#seq').html(data.pageRes);
 			}
 		});
 	});
-//	
+	
+	$('#zyn-btn-search').click(function(){
+		var formData = $('#zyn-form-search').val();
+		console.log(formData);
+		var postData = {};
+		postData['search']=formData;
+//		$(formData).each(function(i){
+//			postData[this.name] = this.value;
+//		});
+		console.log(postData);
+		$.ajax({
+			type:"post",
+			url:"__URL__/getSearch",
+			async:true,
+			data:postData,
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				$('#tableID tbody').remove();
+				var sRows = '';
+				for( var i in data.schedule ){
+					var sRow = '<tr>'+
+									'<td style="display: none;">'+data.schedule[i].store_shop_id+'</td>'+
+//									'<td>'+data[i].store_version_number+'</td>'+
+									'<td>'+data.schedule[i].store_shop_name+'</td>'+
+									'<td>'+data.schedule[i].store_type_id+'</td>'+										
+									'<td>'+data.schedule[i].store_begin_time+'~'+data.schedule[i].store_end_time+'</td>'+	
+									'<td>'+data.schedule[i].send_datetime+'</td>'+
+									'<td>'+data.schedule[i].store_check_state_id+'</td>'+
+									'<td>'+
+										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-editor3" onclick="clickCheck(this)">详情</span>'+
+									'</td>'+
+//									'<td>'+
+//										'<span style="width: 60px;" class=" btn btn-xs btn-default" id="zyn-span-history" onclick="clickHistory(this)">历史记录</span>'+
+//									'</td>'+
+								'</tr>'
+					
+					sRows += sRow;
+				}
+				$('#tableID').append('<tbody></tbody>');
+				$('#tableID tbody').html(sRows);
+				sortList();	
+				$('#seq').html(data.pageRes);
+		}
+		});
+	});
 	function clickCheck(obj){
 		var objpp = obj.parentNode.parentNode;
 		var id = objpp.children[0].innerText;
 		console.log(id);
 		var num = objpp.children[1].innerText;
-		location.href = '__URL__/details'+'?id='+id+'&num='+num;
-	}
-	function clickHistory(obj){
-		var objpp = obj.parentNode.parentNode;
-		var id = objpp.children[0].innerText;
-//		console.log(id);
-		var postData={};
-		location.href = '__URL__/history'+'?id='+id;	
-	}
+		location.href = '__URL__/edit'+'?id='+id;
+	};
+	function sortList(){
+		$("#tableID").trigger("updateCache");
+		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},2:{sorter:false}}});
+   	 
+	};
+	$(function(){
+	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},2:{sorter:false}}});
+	});
 </script>
 	
 <include file="Index/footer"/>

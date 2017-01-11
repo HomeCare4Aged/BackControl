@@ -7,6 +7,9 @@ class HospitalRegisterController extends CommonController {
 			$cond['community_hospitals_name'] = array('like','%'.$_POST['search'].'%');
 			
 		}
+		$cond['community_hospitals_name'] = array('neq','总后台');
+			 
+		
     	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
     	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:10;
     	$hai=D('h_hospital_user_info')->getHospitalAccountInfo($cond,$page,$pageSize);
@@ -97,6 +100,24 @@ class HospitalRegisterController extends CommonController {
 	    		return ajaxReturn(\SUCCESS,'更改成功！');
     	}
     	return ajaxReturn(\ARGUMENT_ERROR,'未获取更新数据');
+	}
+	
+	
+	//编辑医院名称
+	public function edit(){
+		if($_POST){
+			if($_POST['name'] == null ||!$_POST['name']){
+				return ajaxReturn(\DATABASE_ERROR,"医院名不能为空!");
+			}
+			$where['community_hospitals_id'] = $_POST['id'];
+			$date['community_hospitals_name'] = $_POST['name'];
+			$res = D('h_hospitals_info')->where($where)->save($date);
+			if($res){
+				return ajaxReturn(\SUCCESS,'更改成功！');
+			}
+			return ajaxReturn(\DATABASE_ERROR,"更改失败");
+		}
+		return ajaxReturn(\ARGUMENT_ERROR,'未获取更新数据');
 	}
 	
 	

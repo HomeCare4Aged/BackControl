@@ -31,12 +31,26 @@ class h_hospital_user_infoModel extends Model{
 	}
 	
 	public function getAdminInfo($cond=array(),$page,$pageSize){
+		 $this->where($cond) //查询条件
+			->order('community_hospital_numbers desc') ;     //排序规则
 			//处理分页的业务
 			if ($page === null || $pageSize === null){
 				$page = $page !== null  ? $page : 1 ;
 				$pageSize = $pageSize !== null  ? $pageSize : 10 ;
 				$offset = ($page-1) * $pageSize; //每页的起点(偏移量)
 				$this->limit($offset,$pageSize);	 //查询条数
+			}
+			$list=$this->select();
+		return $list;
+	}
+	
+	public function getAdminInfo1($cond=array(),$page,$pageSize){
+			//处理分页的业务
+			if ($page === null || $pageSize === null){
+				$page = $page !== null  ? $page : 1 ;
+				$pageSize = $pageSize !== null  ? $pageSize : 10 ;
+				$offset = ($page-1) * $pageSize; //每页的起点(偏移量)
+//				$this->limit($offset,$pageSize);	 //查询条数
 			}
 			$list = M('h_hospital_user_info')
 			->where($cond)
@@ -46,7 +60,6 @@ class h_hospital_user_infoModel extends Model{
 			->select();
 		return $list;
 	}
-	
 	public function getAdminInfoCount($cond=array()){
 		return $this->where($cond)->count();
 	}

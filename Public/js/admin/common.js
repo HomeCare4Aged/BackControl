@@ -250,7 +250,7 @@ $(document).ready(function(){
 				dataType:'json',
 				success:function(result){
 					if(result.status == SUCCESS){
-						return Dialog.success(result.msg,'');
+						return result.msg,location.href =SCOPE.success_jump_url;
 					}
 					return Dialog.error(result.msg);
 				},

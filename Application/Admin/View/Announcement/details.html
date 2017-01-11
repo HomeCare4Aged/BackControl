@@ -49,7 +49,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="zyn-input-announcement_title" class="control-label col-sm-4">公告用户：</label>
+						<label for="zyn-input-announcement_title" class="control-label col-sm-4">发布用户：</label>
 						<label for="zyn-input-announcement_title" class="control-label">&nbsp;&nbsp;&nbsp;{$announcement.hospital_user_name}</label>
 					</div>
 					<div class="form-group">
@@ -97,7 +97,7 @@
 					</div>
 					<div class="form-group">
 						<label for="zyn-input-announcement_title" class="control-label col-sm-4">审核人:</label>
-						<label for="zyn-input-announcement_title" class="control-label">&nbsp;&nbsp;&nbsp;{$announcement.announcement_checker_id}</label>
+						<label for="zyn-input-announcement_title" class="control-label">&nbsp;&nbsp;&nbsp;{$announcement.announcement_checker_id |getRoleById}</label>
 					</div>
 					<div class="form-group">					
 						<label for="zyn-textarea-content" class="control-label col-sm-4">反馈内容：</label>

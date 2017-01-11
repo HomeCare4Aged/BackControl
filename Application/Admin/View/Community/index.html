@@ -44,22 +44,30 @@
             	<div class="col-md-12 ">
             		<div class="table-responsive">
             			<form id="zyn-form-list">
-            				<table class="table table-bordered table-hover zyn-table-list">
+            				<table class="table table-bordered table-hover zyn-table-list" id="tableID">
             					<thead>
             						<tr class="btn-primary">
-            							<td>社区名称名称</td>
+            							<td>社区名称名称 <span class="glyphicon glyphicon-sort"></span></td>
             							<td>社区地址</td>
-            							<td>状态</td>
+            							<td>创建时间 <span class="glyphicon glyphicon-sort"></span></td>
+            							<td>状态<span class="glyphicon glyphicon-sort"></span></td>
+            							<td>编辑</td>
             						</tr>
             					</thead>
             					<tbody>
             						<volist name='community' id='vo' >
 	            						<tr>
-	            							<td>{$vo.community_name}</td>
-	            							<td>{$vo.community_address}</td>
+	            							<td style="text-align:left">{$vo.community_name}</td>
+	            							<td style="text-align:left">{$vo.community_address}</td>
+	            							<td>{$vo.send_datetime}</td>
 	            							<td>
 	            								<div  id='zyn-span-type' attr-id="{$vo.community_id}" class="btn btn-xs btn-default" style="width: 60px;">
 													<font  <if condition="$vo['state'] eq 关闭">style="color:red;"</if>>{$vo.state}</font>	
+												</div>
+	            							</td>
+	            							<td>
+	            								<div  id='zyn-span-edit' attr-id="{$vo.community_id}" class="btn btn-xs btn-default" style="width: 60px;">
+													编辑	
 												</div>
 	            							</td>
 	            						</tr>
@@ -85,6 +93,16 @@
 		'set_status_url':'__URL__/setState',
 		'list_order_url':'__URL__/listOrder',
 		'success_refresh_url':'__ACTION__',
+		'success_jump_url':'__ACTION__',
 	};
+	
+	function sortList(){
+  		$("#tableID").trigger("updateCache");
+  		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},1:{sorter:false}}});
+ 	 
+	};
+	$(function(){
+		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},1:{sorter:false}}});
+	});
 </script>	
 <include file="Index/footer"/>

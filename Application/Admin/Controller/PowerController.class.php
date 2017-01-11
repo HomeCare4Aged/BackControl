@@ -4,13 +4,7 @@ namespace Admin\Controller;
 //import("ZHKit.Constants");
 class PowerController extends CommonController {
     public function index(){
- 
- 		//模糊搜索逻辑
-    	if(isset($_POST['search']) && ($_POST['search']) != NULL){
-    		$cond['hospital_user_name'] = array('like','%'.$_POST['search'].'%');
-    		$cond['hospital_user_id'] = array('like','%'.$_POST['search'].'%');
-			$this->assign('search',$_POST['search']);
-    	}
+ 	
     	//加载管理员列表
        $cond = array(
     	
@@ -18,11 +12,15 @@ class PowerController extends CommonController {
     	    'state' => array('neq',-1),
     	    'community_hospitals_id' => array('eq',9999),
     	);
- 		
+// 		//模糊搜索逻辑
+//  	if(isset($_POST['search']) && ($_POST['search']) != NULL){
+//  		$cond['hospital_user_name'] = array('like','%'.$_POST['search'].'%');
+//			$this->assign('search',$_POST['search']);
+//  	}
     	//分页逻辑
     	$page = $_REQUEST['p'] ? $_REQUEST['p'] : 1 ;
     	$pageSize = $_REQUEST['pageSize'] ? $_REQUEST['pageSize'] : 10 ;
-    	$acommunityinfos = D('h_hospital_user_info')->getAdminInfo($cond,$page,$pageSize);
+    	$acommunityinfos = D('h_hospital_user_info')->getAdminInfo1($cond,$page,$pageSize);
     	$acommunityinfoCount = D('h_hospital_user_info')->getAdminInfoCount($cond);
     	//获取全部权限信息
 		$menus = D('h_hospital_user_info')->getMenus(array('state' => array('neq',-1)));
@@ -38,6 +36,7 @@ class PowerController extends CommonController {
 			$this->assign('role',$role);
 	    	$this->assign('role_menu_ids',$role_menu_ids);
 		}
+	
     	//分页控件
     	$pageObj = new \Think\Page($communityhospitalsinfoCount,$pageSize);
     	
@@ -62,6 +61,9 @@ class PowerController extends CommonController {
 		);
     	if($_POST){
     		try{
+    			if(in_array($_POST,'8') || in_array($_POST,'9')){
+    				$res1 = D('h_user_limit_info')->insert('3');
+    			}
     			$res = D('h_hospital_user_info')->saveAuth(I('hospital_user_id'),I('limit_tyoe_id'));
     			if($res === false){
     				return ajaxReturn(\DATABASE_ERROR,'权限更新失败');
@@ -204,12 +206,18 @@ class PowerController extends CommonController {
     	}
     	return ajaxReturn(\ARGUMENT_ERROR,'未获取更新数据');
 	}
-//	
+	
 //	//获取员工权限信息
 //	public function assignAuth(){
+//		$admin = session(C(('ADMIN_SESSION')));
+//  	$user = $admin['community_hospitals_id'];
+//		$data = array(
+//			'community_hospitals_id' => intval($user),
+//			'hospital_user_id' => intval($_POST['hospital_user_id']),
+//		);
 //  	if ($_POST){
 // 		try{
-//  			$res = D('h_hospital_user_info')->saveAuth(intval(I('role_id')),I('menu_id'));
+//  			$res = D('h_hospital_user_info')->saveAuth(intval(I('hospital_user_id')),I('limit_tyoe_id'));
 // 		    if ($res === false){
 //  			return ajaxReturn(\DATABASE_ERROR,'权限更新失败');
 //  		}
@@ -219,15 +227,18 @@ class PowerController extends CommonController {
 //  		}
 //  	}else{
 //  		$id = I('id');
+//  		$cond = array(
+//  		'hospital_user_id'=>array('eq',$id)
+//  		);
 //  	if ($id === null || $id == ''){
-//  		return ajaxReturn(\ARGUMENT_ERROR,'未获取角色ID');
+//  		return ajaxReturn(\ARGUMENT_ERROR,'未获取员工ID');
 //  	}
-//  	//获取当前角色信息
-//  	$role = D('h_hospital_user_info')->find(intval($id));
+//  	//获取当前角色权限信息
+//	    $role = D('h_user_limit_info')->where($cond)->find();
 //  	//获取全部权限信息
 //  	$menus = D('a_limit_type_info')->getMenus(array('state' => array('neq',-1)));
 //  	//获取当前角色拥有的权限id
-//  	$role_menu_ids = explode(',',$role['role_menu_ids']);
+//  	$role_menu_ids = explode(',',$role['limit_id']);
 //  	$this->assign('menus',$menus);
 //  	$this->assign('role',$role);
 //  	$this->assign('role_menu_ids',$role_menu_ids);

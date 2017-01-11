@@ -68,7 +68,7 @@ $(document).ready(function(){
     				return Dialog.error(result.msg);
     			}
     			if (result.status == 1){
-    				return result.msg,location.href =SCOPE.succes_jump_url;
+    				return result.msg,location.href =SCOPE.success_jump_url;
     			}
     		},
     	});

@@ -34,8 +34,8 @@
 											<tr class="btn-primary">
 												<td width="200px" align="left">视频标题<span class="glyphicon glyphicon-sort"></span></td>
 												<td>版本号</td>
-												<td>发布人</td>
 												<td>发布时间<span class="glyphicon glyphicon-sort"></span></td>
+												<td>发布人</td>
 												<td colspan="2">操作</td>
 											</tr>
 										</thead>
@@ -45,8 +45,8 @@
 											    	<td style="display: none;">{$vo.video_id}</td>
 											    	<td>{$vo.video_title}</td>
 													<td>{$vo.video_num}</td>
-													<td>{$vo.sender_id|getRoleById}</td>
 													<td>{$vo.send_datetime}</td>
+													<td>{$vo.sender_id|getRoleById}</td>
 													<td>
 														<input id="zyn-span-edit" attr-id="{$vo.video_id}&num={$vo.video_num}" value="审核" type="button" class="btn btn-default btn-xs"/>
 													</td>
@@ -166,7 +166,7 @@
 //		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},2:{sorter:false}}});
 	};
 	$(function(){
-	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},2:{sorter:false},1:{sorter:false}}});
+	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},1:{sorter:false}}});
 	$("#tableID2").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},1:{sorter:false}}});
 	$("#tableID3").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},3:{sorter:false},1:{sorter:false}}});
 	});

@@ -1,0 +1,136 @@
+<include file="Index/header"/>
+
+<div id="wrapper">
+	<include file="Index/nav"/>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<!--面包屑导航.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<li>
+							<i class="fa fa-fw fa-table"></i>
+							店铺类型列表
+						</li>
+					</ol>
+				</div>
+			</div>
+			   <div class="row zyn-div-search">
+            	<div class="col-md-4">
+	            	<form action="__ACTION__" method="post" class="form-horizontal">
+	            		<div class="input-group">
+	            			<span class='input-group-addon'>搜索</span>
+	            				<input type="text" name="search" id="" value="" placeholder="请输入店铺类型" style="line-height: 28px;width: 248px;"/>
+	            			<div class="input-group-btn">
+		            			<button type="submit" class="btn btn-primary">
+		            				<span class='glyphicon glyphicon-search'></span>
+		            			</button>
+	            			</div>
+	            		</div>
+	            	</form>
+	            </div>
+	            <div class="col-md-4">
+				<button type="button" class="btn btn-group btn-primary" data-toggle="modal" data-target="#myModal">新增店铺类型</button>
+				</div>
+            </div>
+            <br/>
+			<!--表单.row-->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<form id="zh-form-list">
+							<table class="table table-bordered table-hover zyn-table-list">
+								<thead>
+									<tr class="btn-primary">
+										<td style="width: 50%;">店铺类型</td>
+										<td colspan="2">操作</td>
+									</tr>
+								</thead>
+								<tbody>
+									<volist name="type" id="vo">
+									    <tr>
+											<td>{$vo.store_type_name}</td>
+											<td>
+												<input data-toggle="modal" data-target="#Modal" value="编辑" type="button" class="btn btn-default btn-xs"/>
+											</td>
+											<td>	
+												<input id="zyn-span-trash" attr-id="{$vo.store_type_id}" value="删除" type="button" class="btn btn-default btn-xs"/>
+											</td>
+									    </tr>
+									</volist>
+								</tbody>
+							</table>
+						</form>
+						<nav>
+							<ul class="pagination">
+								{$pageRes}
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">请输入新增店铺类型</h4>
+			</div>
+			<div class="modal-body">
+				<form id="zyn-form-submit" class="form-horizontal">
+					<div class="form-group">
+						<label for="zh-input-store_type_name" class="control-label col-sm-3">店铺类型:</label>
+						<div class="col-sm-4">
+							<input id="zh-input-store_type_name" class="form-control" type="text" 
+							    name="store_type_name" placeholder="请输入店铺类型"/>
+						</div>
+						<div class="col-sm-5">
+							<p class="zyn-p-validate-result" attr-validate="store_type_name"></p>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" id="zyn-btn-submit">提交</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">请输入新增店铺类型</h4>
+			</div>
+			<div class="modal-body">
+				<form id="zyn-form-submit" class="form-horizontal">
+					<div class="form-group">
+						<label for="zh-input-store_type_name" class="control-label col-sm-3">店铺类型:</label>
+						<div class="col-sm-4">
+							<input id="zh-input-store_type_name" class="form-control" type="text" 
+							    name="store_type_name" placeholder="请输入店铺类型"/>
+						</div>
+						<div class="col-sm-5">
+							<p class="zyn-p-validate-result" attr-validate="store_type_name"></p>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" id="zyn-btn-submit">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var SCOPE = {
+		'set_status_url':'__URL__/setStatus2',
+	};
+</script>
+<include file="Index/footer"/>

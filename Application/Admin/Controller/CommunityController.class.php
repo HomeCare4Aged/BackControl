@@ -5,19 +5,23 @@ class CommunityController extends CommonController {
 	//显示添加社区
    public function index(){
    		//分页逻辑
+   		$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
+    	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:10;
+    	$community=D('a_community_info')->getHospitalAccountInfo($page,$pageSize);
    		if($_POST['search'] != null){
 			$cond['community_name'] = array('like','%'.$_POST['search'].'%');
-			
+			$community = D('a_community_info')->where($cond)->select();
 		}
 		
         if($ancheckstate === false){
             return ajaxReturn(\DATABASE_ERROR,'数据库查询失败！');
         }
 		
-    	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
-    	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:10;
-    	$community=D('a_community_info')->getHospitalAccountInfo($page,$pageSize);
-    	$community = D('a_community_info')->where($cond)->select();
+//  	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
+//  	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:10;
+//  	$community=D('a_community_info')->getHospitalAccountInfo($page,$pageSize);
+//  	cDebug($community);
+//  	$community = D('a_community_info')->where($cond)->select();
     	$Count=D('a_community_info')->getMenuCount($cond);
     	//分页控件
     	$pageObj = new \Think\Page($Count,$pageSize);
@@ -33,16 +37,24 @@ class CommunityController extends CommonController {
    	if($_POST){
    		$validData = D('a_community_info')->create();
    		if($validData){
+// 			cDebug($_POST);
    			if($_POST['area'] == 723){
    				return ajaxReturn(\DATABASE_ERROR,'所在县区未选择！');
    			}
+   			if($_POST['id']){
+   				$where = array(
+   					'community_id' => array('eq',$_POST['id']),
+   				);
+   				$validData['community_address'] = $_POST['area'].$_POST["community_address"];
+   				$validData['send_datetime']=date('Y-m-d H:i:s');
+   				$res = D('a_community_info')->where($where)->save($validData);
+   			}else{
    			$community_id = get_uuid();
    			$validData['community_id'] = $community_id;
    			$validData['community_address'] = $_POST['area'].$_POST["community_address"];
    			$validData['send_datetime']=date('Y-m-d H:i:s');
-// 			cdebug($validData);
-   			//添加
    			$res = D('a_community_info')->add($validData);
+   			}
    			if($res === FALSE){
     				return ajaxReturn(\DATABASE_ERROR,'社区添加失败！');
     			}
@@ -78,5 +90,27 @@ class CommunityController extends CommonController {
 	    		return ajaxReturn(\SUCCESS,'更改成功！');
     	}
     	return ajaxReturn(\ARGUMENT_ERROR,'未获取更新数据');
-	}   
+	}
+	
+	
+	    //编辑页展示API
+    public function edit(){
+    	
+    	$menu_id=I('id');
+    	$cond = array(
+    	'community_id'=>array('eq',$menu_id)
+    	);
+    	try{
+    		$menu=D('a_community_info')->where($cond)->find();
+    	}catch(Exception $e){
+    		return ajaxReturn(\QUERY_ERROR,$e->getMessage());
+    	}
+    	if($menu===false){
+    		return ajaxReturn(\DATABASE_ERROR,"数据库查询失败");
+    	}
+    	$this->assign('menu',$menu);
+    	$this->display();
+    }
+    
+ 
 }

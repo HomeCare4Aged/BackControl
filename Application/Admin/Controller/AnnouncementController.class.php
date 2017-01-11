@@ -8,21 +8,61 @@ use ZHKit\ImageUploader;
 //use ZHKit\constants;
 class AnnouncementController extends CommonController{
 	public function index(){
-		$admin = session(C('ADMIN_SESSION'));
-		$sender_id = $admin['hospital_user_id'];
-    	$cond['state']=array('neq','关闭');
-    	$cond['announcement_sender_id'] = $sender_id;
-//  	$cond['announcement_check_state'] = '已通过';
-    	if(isset($_POST['search']) && ($_POST['search']) != NULL){
-    		$cond['announcement_title'] = array('like','%'.$_POST['search'].'%');
-			$this->assign('search',$_POST['search']);
-    	}
-    		$announcement = M('a_announcement_info')->where($cond)->select();
-    		if($announcement === false){
+		if($_GET['type']){
+//			cDebug(session('selectedValue1'));
+			$_REQUEST['p'] = $_GET['p'];
+			if(session('selectedValue1') == 1){
+//				cDebug('123');
+				$cond['announcement_check_state'] = '通过';
+			}
+			if(session('selectedValue1') == 0){
+				if(session('selectedValue1') == 0){
+				}
+				else{
+					$cond['announcement_sender_id'] = $admin['hospital_user_id'];
+				}
+				if(session('selectedValue2') == 1){
+					$cond['announcement_check_state'] = '未审核';
+					
+				}
+				if(session('selectedValue2') == 2){
+					$cond['announcement_check_state'] = '通过';
+				}
+				if(session('selectedValue2') == 3){
+					$cond['announcement_check_state'] = '未通过';
+				}
+			}
+		}
+		else{
+//			cDebug('123');
+			
+			session('selectedValue1',null);
+			session('selectedValue2',null);
+		}
+		$cond['state']=array('neq','关闭');
+    	$admin = session(C('ADMIN_SESSION'));
+    	
+    	$announcement = M('a_announcement_info')->order(array('announcement_version_number'=>'desc'))->where($cond)->select();
+    	if($announcement === false){
     		return ajaxReturn(\DATABASE_ERROR,'数据库查询失败！');
-    		}
-    	$this->assign('announcement',$announcement);
-    	$this->display();
+    	}
+    	
+    	
+    	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
+    	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:2;
+    	
+    	$schedule=D('a_announcement_info')->getAncheckstates($cond,$page,$pageSize);
+//		cDebug($cond);	
+    	
+    	$scheduletateCount=D('a_announcement_info')->getAncheckstatesCount($cond);
+    	//分页控件
+    	$pageObj = new \Think\Page($scheduletateCount,$pageSize);
+    	//获取分页结果
+    	$pageRes = $pageObj->show();
+		$this->assign('pageRes',$pageRes);
+    	$this->assign('announcement',$schedule); 
+//  	cDebug($schedule); 	
+       	$this->display();
     }
 	public function add(){
 		if($_POST){
@@ -70,7 +110,7 @@ class AnnouncementController extends CommonController{
 		$sent_time = date('Y-m-d H:i:s');
 		$type = D('a_announcement_type')->select();
 		$this ->assign('type',$type);
-		$this ->assign('admin',$admin['hospital_user_name']);
+		$this ->assign('name',$admin['hospital_user_name']);
 		$this ->assign('community_hospitals_name',$community_hospitals_name);
 		$this ->assign('sent_time',$sent_time);
 		$this->display();
@@ -134,11 +174,9 @@ class AnnouncementController extends CommonController{
     	$cond=array(
 		    'announcement_check_state'=>array('eq','未审核'),
 			);
-		$admin = session(C('ADMIN_SESSION'));
-	    $sender_id = $admin['hospital_user_id'];
 		$where=array(
 		    'announcement_check_state'=>array('neq','未审核'),
-		    'announcement_checker_id'=>array('eq',$sender_id),
+		    'announcement_checker_id'=>array('eq',session(C('ADMIN_SESSION'))['hospital_user_id']),
 			);
 		$data=array(
 		    'announcement_check_state'=>array('neq','未审核'),
@@ -186,58 +224,93 @@ class AnnouncementController extends CommonController{
    
     public function getData(){
     	$selectedValue = I('selectedValue');
+    	session('selectedValue2',$selectedValue);
+		if($_GET){
+			$this->redirect('Announcement/index',array('p'=>$_GET['p'],'type'=>'true'));
+		}
+    	
     	$admin = session(C('ADMIN_SESSION'));
     	$sender_id = $admin['hospital_user_id'];
     	if($selectedValue == 0){
     		$map['state']=array('neq','关闭');
     		$map['announcement_sender_id'] = $sender_id;
-    		$announcement = M('a_announcement_info')->where($map)->select();
-//  		cDebug($announcement);
+//  	
     	}
     	if($selectedValue == 1){
     		$map['state']=array('neq','关闭');
     		$map['announcement_check_state'] = '未审核';
     		$map['announcement_sender_id'] = $sender_id;
-    		$announcement = M('a_announcement_info')->where($map)->select();
     	}
     	if($selectedValue == 2){
     		$map['state']=array('neq','关闭');
     		$map['announcement_check_state'] = '已通过';
     		$map['announcement_sender_id'] = $sender_id;
-    		$announcement = M('a_announcement_info')->where($map)->select();
     	}
     	if($selectedValue == 3){
     		$map['state']=array('neq','关闭');
     		$map['announcement_check_state'] = '未通过';
     		$map['announcement_sender_id'] = $sender_id;
-    		$announcement = M('a_announcement_info')->where($map)->select();
     	}
-    	
-    	echo json_encode($announcement);
+    	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
+    	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:2;
+    	$schedule=D('a_announcement_info')->getAncheckstates($map,$page,$pageSize);	
+    	$scheduletateCount=D('a_announcement_info')->getAncheckstatesCount($map);
+    	//分页控件
+    	$pageObj = new \Think\Page($scheduletateCount,$pageSize);
+    	//获取分页结果
+    	$pageRes = $pageObj->show();
+    	$res['pageRes'] = $pageRes;
+    	$res['schedule'] = $schedule;
+//  	cdebug($res);
+    	echo json_encode($res);
+//  	echo json_encode($announcement);
     }
      public function getSourse(){
+     	$admin = session(C('ADMIN_SESSION'));
      	$selectedValue = I('selectedValue');
-//   	$cond['status']=array('neq',-1);
-    	$announcement = D('AAnnouncementInfo')->where($cond)->select();
+     	session('selectedValue1',$selectedValue);
+     	
+		if($_GET){
+			$this->redirect('Announcement/index',array('p'=>$_GET['p'],'type'=>'true'));
+		}
+     	$map['state']=array('neq','关闭');
+//   	$cond['announcement_hospital_id']=$admin['community_hospitals_id'];
+    	$announcement = D('a_announcement_info')->where($map)->select();
     	if($announcement === false){
     		return ajaxReturn(\DATABASE_ERROR,'数据库查询失败！');
     	}
     	$admin = session(C('ADMIN_SESSION'));
     	$sender_id = $admin['hospital_user_id'];
     	if($selectedValue == 0){
-    		$map['state']=array('neq','关闭');
+//  		$map['state']=array('neq','关闭');
     		$map['announcement_sender_id'] = $sender_id;
-    		$announcement = M('a_announcement_info')->where($map)->select();
+//  		$announcement = M('a_announcement_info')->where($map)->select();
 //  		cDebug($announcement);
     	}
     	if($selectedValue == 1){
-    		$map['state']=array('neq','关闭');
+//  		$map['state']=array('neq','关闭');
     		$map['announcement_check_state'] = '已通过';
-    		$announcement = M('a_announcement_info')->where($map)->select();
+//  		$announcement = M('a_announcement_info')->where($map)->select();
 //  		cDebug($announcement);
     	}
+    	$page=$_REQUEST['p'] ?$_REQUEST['p']:1;
+    	$pageSize=$_REQUEST['pageSize']?$_REQUEST['pageSize']:2;
+    	$schedule=D('a_announcement_info')->getAncheckstates($map,$page,$pageSize);	
+    	$scheduletateCount=D('a_announcement_info')->getAncheckstatesCount($map);
+    	//分页控件
+    	$pageObj = new \Think\Page($scheduletateCount,$pageSize);
+    	//获取分页结果
+    	$pageRes = $pageObj->show();
+    	$res['pageRes'] = $pageRes;
     	
-    	echo json_encode($announcement);
+    	foreach($schedule as $key => $value){
+    		$schedule[$key]['announcement_sender_name'] = M('h_hospital_user_info')->where(array('hospital_user_id'=>$value['announcement_sender_id']))->getField('hospital_user_name');
+    	}
+    	
+    	$res['schedule'] = $schedule;
+
+    	echo json_encode($res);
+//  	echo json_encode($announcement);
     }
     public function modelShow(){
     	$showID = I('id');
@@ -376,6 +449,37 @@ class AnnouncementController extends CommonController{
 		}
 		return ajaxReturn(\UPDATE_ERROR,'未获取更新数据');
 	}
+	
+	//搜索
+	 public function getSearch(){
+    	$spanData = I('spanData');
+    	cdebug($spanData);
+    	$cond['state']=array('neq','关闭');
+    	$admin = session(C('ADMIN_SESSION'));
+    	$cond['announcement_title'] = array('like','%'.$search.'%');
+    	if(I('select-user') == 0){
+    		$cond['announcement_sender_id'] = $admin['hospital_user_id'];
+    		if(I('select-type') == 0){
+    			
+    		}
+    		if(I('select-type') == 1){
+    			$cond['announcement_check_state'] = '未审核';
+    		}
+    		if(I('select-type') == 2){
+    			$cond['announcement_check_state'] = '通过';
+    		}
+    		if(I('select-type') == 3){
+    			$cond['announcement_check_state'] = '未通过';
+    		}
+    	}
+    	if(I('select-user') == 1){
+    		
+    	}    	
+    	$announcement = M('a_announcement_info')->order(array('announcement_version_number'=>'desc'))->where($cond)->select();
+//  	cDebug($announcement);
+    	echo json_encode($announcement);
+    	
+    }
     
 }
 ?>

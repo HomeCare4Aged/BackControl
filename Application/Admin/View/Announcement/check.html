@@ -32,12 +32,12 @@
 		            	<div class="col-md-12 ">
 		            		<div class="table-responsive">
 		            			<form id="zyn-form-list">
-		            				<table class="table table-bordered table-hover zyn-table-list">
+		            				<table class="table table-bordered table-hover zyn-table-list" id="tableID">
 		            					<thead>
 		            						<tr class="btn-primary">
-		            							<td>公告标题</td>
+		            							<td>公告标题 <span class="glyphicon glyphicon-sort"></td>
 		            							<td>发布人</td>
-		            							<td>发布时间</td>
+		            							<td>发布时间 <span class="glyphicon glyphicon-sort"></td>
 		            							<td>操作</td>
 		            						</tr>
 		            					</thead>
@@ -69,12 +69,13 @@
 		            	<div class="col-md-12 ">
 		            		<div class="table-responsive">
 		            			<form id="zyn-form-list">
-		            				<table class="table table-bordered table-hover zyn-table-list">
+		            				<table class="table table-bordered table-hover zyn-table-list" id="tableID2">
 		            					<thead>
 		            						<tr class="btn-primary">
-		            							<td>公告标题</td>
+		            							<td>公告标题 <span class="glyphicon glyphicon-sort"></span></td>
 		            							<td>发布人</td>
-		            							<td>审核时间</td>
+		            							<td>发布时间</td>
+		            							<td>审核时间 <span class="glyphicon glyphicon-sort"></span></td>
 		            							<td>审核状态</td>
 		            							<td>操作</td>
 		            						</tr>
@@ -82,9 +83,10 @@
 		            					<tbody>
 		            						<volist name='ancheckstate2' id='vo' >
 			            						<tr>
-			            							<td>{$vo.announcement_title}</td>
-			            							<td>{$vo.announcement_check_time}</td>
+			            							<td style="text-align:left">{$vo.announcement_title}</td>
+			            							<td></td>
 			            							<td>{$vo.send_datetime}</td>
+			            							<td>{$vo.announcement_check_time}</td>
 			            							<td>{$vo.announcement_check_state}</td>
 			            							<td>
 			            								<span class="btn btn-default btn-xs" id='zyn-span-edit' attr-id="{$vo.announcement_id}&num={$vo.announcement_version_number}">查看详情</span>
@@ -109,12 +111,13 @@
 		            	<div class="col-md-12 ">
 		            		<div class="table-responsive">
 		            			<form id="zyn-form-list">
-		            				<table class="table table-bordered table-hover zyn-table-list">
+		            				<table class="table table-bordered table-hover zyn-table-list" id="tableID3">
 		            					<thead>
 		            						<tr class="btn-primary">
-		            							<td>公告标题</td>
+		            							<td>公告标题 <span class="glyphicon glyphicon-sort"></td>
 		            							<td>发布人</td>
-		            							<td>审核时间</td>
+		            							<td>发布时间</td>
+		            							<td>审核时间 <span class="glyphicon glyphicon-sort"></td>
 		            							<td>审核状态</td>
 		            							<td>操作</td>
 		            						</tr>
@@ -123,8 +126,9 @@
 		            						<volist name='ancheckstate3' id='vo' >
 			            						<tr>
 			            							<td>{$vo.announcement_title}</td>
-			            							<td>{$vo.announcement_check_time}</td>
 			            							<td>{$vo.send_datetime}</td>
+			            							<td>{$vo.announcement_check_time}</td>
+			            							
 			            							<td>{$vo.announcement_check_state}</td>
 			            							<td>
 			            								<span class="btn btn-default btn-xs" id='zyn-span-edit' attr-id="{$vo.announcement_id}&num={$vo.announcement_version_number}">查看详情</span>
@@ -147,41 +151,7 @@
 			
 		</div>
 	<!--------------------------------------------->
-			<!--<div class="row">
-            	<div class="col-md-12 ">
-            		<div class="table-responsive">
-            			<form id="zyn-form-list">
-            				<table class="table table-bordered table-hover zyn-table-list">
-            					<thead>
-            						<tr class="success">
-            							<td>公告标题</td>
-            							<td>发布人</td>
-            							<td>发布时间</td>
-            							<td>操作</td>
-            						</tr>
-            					</thead>
-            					<tbody>
-            						<volist name='ancheckstate' id='vo' >
-	            						<tr>
-	            							<td>{$vo.announcement_title}</td>
-	            							<td>{$vo.announcement_sender_id}</td>
-	            							<td>{$vo.send_datetime}</td>
-	            							<td>
-	            								<span class="btn btn-primary" id='zyn-span-edit' attr-id="{$vo.announcement_id}&num={$vo.announcement_version_number}">查看详情</span>
-	            							</td>
-	            						</tr>
-	            					</volist>
-            					</tbody>
-            				</table>
-            			</form>
-            			<nav>
-							<ul class="pagination">
-								{$pageRes}
-							</ul>
-						</nav>
-            		</div>
-            	</div>
-            </div>-->
+			
 		</div>
 	</div>
 </div>	
@@ -189,11 +159,17 @@
 <script>
 	var SCOPE = {
 		'edit_url':'__URL__/edit'
-//		'add_url':'__ACTION__',
-//		'success_jump_url':'__URL__/index',
-//		'ajax_upload_swf':'__JS__/vendor/uploadify/uploadify.swf',
-//		'ajax_upload_url':'__URL__/ajaxUploadImage', 
 	};
+	function sortList(){
+  		$("#tableID").trigger("updateCache");
+  		$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},2:{sorter:false}}});
+	};
+	$(function(){
+	$("#tableID").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},1:{sorter:false}}});
+	$("#tableID2").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},1:{sorter:false}}});
+	$("#tableID3").tablesorter({headers:{8:{sorter:false},7:{sorter:false},6:{sorter:false},5:{sorter:false},4:{sorter:false},3:{sorter:false},1:{sorter:false}}});
+ 	 
+	});
 </script>
 		
 <include file="Index/footer" />

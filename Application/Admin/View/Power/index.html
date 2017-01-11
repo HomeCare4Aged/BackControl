@@ -61,6 +61,7 @@
 	            							</td>
 	            							<td>
 	            							    <input attr-id="{$vo.hospital_user_id}" value="权限分配" type="button" class="btn btn-default btn-xs" onclick="assign11(this)" data-toggle="modal" data-target="#xx-modal-assign"/>
+	            							     <!--<input id="zyn-span-assign-auth" attr-id="{$vo.hospital_user_id}" value="权限分配" type="button" class="btn btn-default btn-xs"/>-->
 	            							</td>
 	            							<td>
 	            								<input data-toggle="modal" data-target="#Modal" value="编辑" attr-id="{$vo.hospital_user_id}" type="button" class="btn btn-default btn-xs" onClick="editClick(this)"/>
@@ -111,7 +112,6 @@
 	</div>
 </div>
 <div class="col-sm-10">
-	<!-- 模态框（Modal） -->
 	<div class="modal fade" id="xx-modal-assign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -129,19 +129,21 @@
 							<form id="zyn-form-assign-auth" class="form-inline">
 								<table>
 									<tr>
-										<volist name="menus" id="pvo" key="k">
-											<if condition="$pvo['limit_num'] eq 0">
+										<volist name="menus" id="pvo1" key="k">
+											<if condition="$pvo1['limit_num'] eq 0">
 												<td>
 													<label>
-														<input type="checkbox"  value="{$pvo.limit_tyoe_id}" name="limit_tyoe_id[{$k}]"/>
-														{$pvo.limit_event}
+														<input type="checkbox"  value="{$pvo1.limit_tyoe_id}" name="limit_tyoe_id[{$k}]"/>
+														{$pvo1.limit_event}
 													</label>
 												</td>
 												<tr class="nav nav-second-level">
 													
 												</tr>
 											</if>
-											<if condition="$pvo['limit_num'] eq 1">
+										</volist>
+										<volist name="menus" id="pvo" key="k">
+											<if condition="$pvo['limit_num'] eq -1">
 												<td>
 													<label>
 														<input type="checkbox"  value="{$pvo.limit_tyoe_id}" name="limit_tyoe_id[{$k}]"/>
@@ -167,7 +169,7 @@
 								<input name="hospital_user_id" type="hidden" value="" id="user-id-quanxian"/>
 							</form>
 						</div>
-					</div><!--.row表单-->
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">
@@ -178,9 +180,7 @@
 									</button>
 					</div>
 			</div>
-			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal -->
 	</div>
 </div>
 <script>
@@ -224,7 +224,6 @@
 		});
     });  
 };
-
 function assign11(obj){
 		$("input:checkbox").prop('checked',false);
 		var objpp = obj.parentNode.parentNode;

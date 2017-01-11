@@ -36,6 +36,7 @@ class LoginController extends Controller {
       		//异常处理
       		return ajaxReturn(0,$e->getMessage());
       	}
+     
         if ($res === false){
         	return ajaxReturn(0,'查询出错');
         }
@@ -45,7 +46,7 @@ class LoginController extends Controller {
         if (($adminPsw) != $res['hospital_user_psw']){
         	return ajaxReturn(0,'密码错误');
         }
-        $where = array(
+         	$where = array(
       		'hospital_user_no' =>array('eq',$adminName),
       		'hospital_user_psw' =>array('eq',$adminPsw),
       	);
@@ -56,6 +57,11 @@ class LoginController extends Controller {
       	}else{
       		return ajaxReturn(0,'该用户不存在');
       	};
+        
+//      $adminName = session(C('ADMIN_SESSION'))['admin_name'];
+//      $this->assign('adminName'.$adminName);
+//      cdebug($adminName);
+        
       }
       public function logout(){
       	session(C('ADMIN_SESSION'),NULL);
